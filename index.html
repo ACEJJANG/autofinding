@@ -3,60 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>강릉 솔향하늘길 화장예약 실시간 현황판</title>
+    <title>강원권 화장예약 실시간 통합 현황판</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
         <header class="mb-6 text-center">
-            <h1 class="text-2xl md:text-3xl font-bold mb-2">🔥 강릉 솔향하늘길 화장예약 실시간 현황</h1>
-            <p class="text-slate-400 text-sm">앞으로 3일간(오늘 제외) 일반시신 관내·관외 회차별 잔여석 정보</p>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">🔥 강원권 화장예약 실시간 통합 현황</h1>
+            <p class="text-slate-400 text-sm">솔향하늘길, 속초시승화원, 동해삼척공동화장장 (오늘 제외 향후 3일간 일반시신)</p>
             <div class="mt-4 flex flex-wrap justify-center items-center gap-3">
                 <div id="update-time" class="bg-slate-800 text-cyan-400 px-4 py-1.5 rounded-full text-xs font-mono border border-slate-700">
                     데이터 동기화 시간 확인 중...
                 </div>
-                <!-- 즉시 조회 버튼 -->
                 <button onclick="triggerRefresh()" id="refresh-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow transition flex items-center gap-1.5">
                     🔄 실시간 즉시 조회
                 </button>
             </div>
         </header>
 
-        <!-- 현황판 카드 컨테이너 -->
+        <!-- 시설별 탭 선택 네비게이션 -->
+        <div id="facility-tabs" class="flex flex-wrap justify-center gap-2 mb-6">
+            <!-- 자바스크립트로 동적 생성 -->
+        </div>
+
+        <!-- 현황판 컨테이너 -->
         <div id="board-container" class="space-y-6">
             <div class="text-center py-12 text-slate-500">데이터를 불러오는 중입니다...</div>
         </div>
     </div>
 
     <script>
+        let globalData = null;
+        let currentFacilityIdx = 0;
+
         async function fetchReservationData() {
             try {
                 const response = await fetch('./data.json?t=' + new Date().getTime());
                 if (!response.ok) throw new Error('데이터 파일을 찾을 수 없습니다.');
                 
                 const result = await response.json();
+                globalData = result;
                 document.getElementById('update-time').innerText = `마지막 갱신: ${result.updated_at}`;
-                renderBoard(result.data);
+                
+                renderTabs();
+                renderFacilityBoard(currentFacilityIdx);
             } catch (error) {
                 console.error(error);
                 document.getElementById('board-container').innerHTML = `
                     <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl text-center text-slate-300">
-                        수집된 데이터가 아직 없거나 대기 중입니다. 상단의 <b>[실시간 즉시 조회]</b> 버튼을 눌러주세요.
+                        수집된 데이터가 아직 없습니다. 상단의 <b>[실시간 즉시 조회]</b> 버튼을 눌러주세요.
                     </div>
                 `;
             }
         }
 
-        function renderBoard(dataList) {
+        function renderTabs() {
+            const tabsContainer = document.getElementById('facility-tabs');
+            tabsContainer.innerHTML = '';
+
+            globalData.facilities.forEach((fac, idx) => {
+                const isActive = idx === currentFacilityIdx;
+                const btnClass = isActive 
+                    ? 'bg-cyan-500 text-slate-950 font-bold shadow-lg border-cyan-400' 
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700';
+                
+                tabsContainer.innerHTML += `
+                    <button onclick="switchFacility(${idx})" class="px-5 py-2 rounded-xl text-sm font-semibold border transition ${btnClass}">
+                        🏛️ ${fac.facility_name}
+                    </button>
+                `;
+            });
+        }
+
+        function switchFacility(idx) {
+            currentFacilityIdx = idx;
+            renderTabs();
+            renderFacilityBoard(currentFacilityIdx);
+        }
+
+        function renderFacilityBoard(facIdx) {
             const container = document.getElementById('board-container');
             container.innerHTML = '';
 
-            dataList.forEach(day => {
+            const facility = globalData.facilities[facIdx];
+
+            facility.schedules.forEach(day => {
                 let cardHTML = `
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg">
                         <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
                             <h2 class="text-xl font-semibold text-cyan-300">📅 ${day.date}</h2>
-                            <span class="text-xs bg-slate-700 text-slate-300 px-3 py-1 rounded-lg">${day.facility}</span>
+                            <span class="text-xs bg-slate-700 text-cyan-200 px-3 py-1 rounded-lg font-medium">${facility.facility_name}</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 `;
@@ -65,26 +101,24 @@
                     const inData = shift.in_jurisdiction;
                     const outData = shift.out_jurisdiction;
                     
-                    const inBadge = inData.status === '예약가능' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-                    const outBadge = outData.status === '예약가능' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+                    // 상태에 따른 뱃지 디자인 분기 (예약가능 / 예약완료 / 예약불가)
+                    const getBadgeStyle = (status) => {
+                        if (status === '예약가능') return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                        if (status === '예약완료') return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                        return 'bg-rose-500/20 text-rose-400 border-rose-500/30'; // 예약불가 / 마감
+                    };
 
                     cardHTML += `
                         <div class="bg-slate-900/70 border border-slate-700/60 rounded-xl p-4 flex flex-col justify-between">
                             <div class="font-bold text-lg text-slate-200 mb-3 border-b border-slate-800 pb-2">${shift.turn}</div>
                             <div class="space-y-3 text-sm">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-400">관내 잔여</span>
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-cyan-200">${inData.count}석</span>
-                                        <span class="px-2 py-0.5 rounded-md text-xs font-semibold border ${inBadge}">${inData.status}</span>
-                                    </div>
+                                    <span class="text-slate-400">관내</span>
+                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold border ${getBadgeStyle(inData.status)}">${inData.text}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-400">관외 잔여</span>
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-bold text-cyan-200">${outData.count}석</span>
-                                        <span class="px-2 py-0.5 rounded-md text-xs font-semibold border ${outBadge}">${outData.status}</span>
-                                    </div>
+                                    <span class="text-slate-400">관외</span>
+                                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold border ${getBadgeStyle(outData.status)}">${outData.text}</span>
                                 </div>
                             </div>
                         </div>
@@ -101,13 +135,12 @@
             btn.innerText = '조회 요청 중...';
             btn.disabled = true;
             
-            // 화면 재조회 시도
             await fetchReservationData();
             
             setTimeout(() => {
                 btn.innerText = '🔄 실시간 즉시 조회';
                 btn.disabled = false;
-                alert('최신 현황 정보를 다시 불러왔습니다!');
+                alert('최신 통합 현황 정보를 다시 불러왔습니다!');
             }, 1000);
         }
 
