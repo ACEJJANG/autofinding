@@ -8,17 +8,22 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-8">
     <div class="max-w-4xl mx-auto">
-        <header class="mb-8 text-center">
+        <header class="mb-6 text-center">
             <h1 class="text-2xl md:text-3xl font-bold mb-2">🔥 강릉 솔향하늘길 화장예약 실시간 현황</h1>
-            <p class="text-slate-400 text-sm">앞으로 3일간의 일반시신 관내·관외 회차별 예약 현황</p>
-            <div id="update-time" class="mt-3 inline-block bg-slate-800 text-cyan-400 px-4 py-1 rounded-full text-xs font-mono border border-slate-700">
-                데이터 동기화 시간 확인 중...
+            <p class="text-slate-400 text-sm">앞으로 3일간(오늘 제외) 일반시신 관내·관외 회차별 잔여석 정보</p>
+            <div class="mt-4 flex flex-wrap justify-center items-center gap-3">
+                <div id="update-time" class="bg-slate-800 text-cyan-400 px-4 py-1.5 rounded-full text-xs font-mono border border-slate-700">
+                    데이터 동기화 시간 확인 중...
+                </div>
+                <!-- 즉시 조회 버튼 -->
+                <button onclick="triggerRefresh()" id="refresh-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow transition flex items-center gap-1.5">
+                    🔄 실시간 즉시 조회
+                </button>
             </div>
         </header>
 
         <!-- 현황판 카드 컨테이너 -->
         <div id="board-container" class="space-y-6">
-            <!-- 자바스크립트로 데이터가 동적으로 렌더링됩니다 -->
             <div class="text-center py-12 text-slate-500">데이터를 불러오는 중입니다...</div>
         </div>
     </div>
@@ -26,19 +31,17 @@
     <script>
         async function fetchReservationData() {
             try {
-                // 같은 레포지토리에 있는 data.json을 캐시 없이 가져옴
                 const response = await fetch('./data.json?t=' + new Date().getTime());
-                if (!response.ok) throw new Error('데이터를 불러오지 못했습니다.');
+                if (!response.ok) throw new Error('데이터 파일을 찾을 수 없습니다.');
                 
                 const result = await response.json();
                 document.getElementById('update-time').innerText = `마지막 갱신: ${result.updated_at}`;
-                
                 renderBoard(result.data);
             } catch (error) {
                 console.error(error);
                 document.getElementById('board-container').innerHTML = `
-                    <div class="bg-red-900/50 border border-red-700 p-4 rounded-xl text-center text-red-200">
-                        데이터 파일을 불러오는 중이거나 아직 첫 수집이 진행되지 않았습니다. 잠시 후 다시 확인해주세요.
+                    <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl text-center text-slate-300">
+                        수집된 데이터가 아직 없거나 대기 중입니다. 상단의 <b>[실시간 즉시 조회]</b> 버튼을 눌러주세요.
                     </div>
                 `;
             }
@@ -59,23 +62,29 @@
                 `;
 
                 day.shifts.forEach(shift => {
-                    const inStatus = shift.in_jurisdiction.status;
-                    const outStatus = shift.out_jurisdiction.status;
+                    const inData = shift.in_jurisdiction;
+                    const outData = shift.out_jurisdiction;
                     
-                    const inBadge = inStatus === '예약가능' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-                    const outBadge = outStatus === '예약가능' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+                    const inBadge = inData.status === '예약가능' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+                    const outBadge = outData.status === '예약가능' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border-rose-500/30';
 
                     cardHTML += `
                         <div class="bg-slate-900/70 border border-slate-700/60 rounded-xl p-4 flex flex-col justify-between">
                             <div class="font-bold text-lg text-slate-200 mb-3 border-b border-slate-800 pb-2">${shift.turn}</div>
-                            <div class="space-y-2 text-sm">
+                            <div class="space-y-3 text-sm">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-400">관내</span>
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold border ${inBadge}">${inStatus}</span>
+                                    <span class="text-slate-400">관내 잔여</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-cyan-200">${inData.count}석</span>
+                                        <span class="px-2 py-0.5 rounded-md text-xs font-semibold border ${inBadge}">${inData.status}</span>
+                                    </div>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-400">관외</span>
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold border ${outBadge}">${outStatus}</span>
+                                    <span class="text-slate-400">관외 잔여</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-cyan-200">${outData.count}석</span>
+                                        <span class="px-2 py-0.5 rounded-md text-xs font-semibold border ${outBadge}">${outData.status}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -87,9 +96,23 @@
             });
         }
 
-        // 페이지 접속 시 로드 및 1분마다 자동 새로고침
+        async function triggerRefresh() {
+            const btn = document.getElementById('refresh-btn');
+            btn.innerText = '조회 요청 중...';
+            btn.disabled = true;
+            
+            // 화면 재조회 시도
+            await fetchReservationData();
+            
+            setTimeout(() => {
+                btn.innerText = '🔄 실시간 즉시 조회';
+                btn.disabled = false;
+                alert('최신 현황 정보를 다시 불러왔습니다!');
+            }, 1000);
+        }
+
         fetchReservationData();
-        setInterval(fetchReservationData, 60000);
+        setInterval(fetchReservationData, 60000); // 1분마다 웹앱 화면 자동 동기화
     </script>
 </body>
 </html>
