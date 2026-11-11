@@ -1,0 +1,122 @@
+{
+    "updated_at": "2026-11-11 23:25:40",
+    "data": [
+        {
+            "date": "2026-11-11",
+            "facility": "강릉 솔향하늘길",
+            "shifts": [
+                {
+                    "turn": "1회차",
+                    "in_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 2
+                    },
+                    "out_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    }
+                },
+                {
+                    "turn": "2회차",
+                    "in_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 1
+                    },
+                    "out_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 1
+                    }
+                },
+                {
+                    "turn": "3회차",
+                    "in_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    },
+                    "out_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    }
+                }
+            ]
+        },
+        {
+            "date": "2026-11-12",
+            "facility": "강릉 솔향하늘길",
+            "shifts": [
+                {
+                    "turn": "1회차",
+                    "in_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 2
+                    },
+                    "out_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    }
+                },
+                {
+                    "turn": "2회차",
+                    "in_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 1
+                    },
+                    "out_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 1
+                    }
+                },
+                {
+                    "turn": "3회차",
+                    "in_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    },
+                    "out_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    }
+                }
+            ]
+        },
+        {
+            "date": "2026-11-13",
+            "facility": "강릉 솔향하늘길",
+            "shifts": [
+                {
+                    "turn": "1회차",
+                    "in_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 2
+                    },
+                    "out_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    }
+                },
+                {
+                    "turn": "2회차",
+                    "in_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 1
+                    },
+                    "out_jurisdiction": {
+                        "status": "예약가능",
+                        "count": 1
+                    }
+                },
+                {
+                    "turn": "3회차",
+                    "in_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    },
+                    "out_jurisdiction": {
+                        "status": "마감",
+                        "count": 0
+                    }
+                }
+            ]
+        }
+    ]
+}
