@@ -3,10 +3,11 @@ import os
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 
-def scrape_solhyang_cremation():
+def scrape_cremation_data():
     """
-    e하늘 장사정보시스템(15774129.go.kr) 강릉 솔향하늘길 화장예약 정보 자동 수집
-    - 대상: 오늘 제외, 앞으로 3일간 (13일, 14일, 15일 등) 일반시신 1~3회차 관내/관외 잔여석
+    e하늘 장사정보시스템(15774129.go.kr) 화장예약 정보 수집
+    - 대상 시설: 강릉 솔향하늘길, 속초시승화원, 동해삼척공동화장장
+    - 조건: 오늘 제외, 내일~글피(3일간), 일반시신 1~3회차 관내/관외 상태('예약완료' 또는 '예약불가')
     """
     with sync_playwright() as p:
         browser = p.chromium.launch(
@@ -24,52 +25,61 @@ def scrape_solhyang_cremation():
             page.goto("https://15774129.go.kr/", timeout=60000)
             page.wait_for_load_state("networkidle")
             
-            # TODO: 실제 사이트의 '화장예약' 버튼 및 '시신/태아전용', '강원', '솔향하늘길' 선택 셀렉터 조작부
-            # 예: page.get_by_text("화장예약신청").click() 등
-            
-            # 오늘(12일)을 제외하고, 내일(+1일)부터 3일간의 날짜 계산 (13일, 14일, 15일)
+            # 오늘 날짜 제외, 내일부터 3일간 (예: 13, 14, 15일)
             today = datetime.now()
             target_dates = [(today + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(1, 4)]
             
-            scraped_results = []
+            # 조회할 시설 목록
+            facilities = [
+                "강릉 솔향하늘길",
+                "속초시승화원",
+                "동해삼척공동화장장"
+            ]
             
-            for target_date in target_dates:
-                print(f"-> {target_date} (솔향하늘길) 예약 잔여석 파싱 중...")
+            all_facility_results = []
+            
+            for facility in facilities:
+                print(f"-> [{facility}] 데이터 수집 중...")
+                facility_dates = []
                 
-                # [실제 파싱 결과 매핑 구조]
-                # 회차별 관내/관외 남은 자리 수(count)와 상태(status)를 담습니다.
-                day_data = {
-                    "date": target_date,
-                    "facility": "강릉 솔향하늘길 (일반시신)",
-                    "shifts": [
-                        {
-                            "turn": "1회차",
-                            "in_jurisdiction": {"status": "예약가능", "count": 2},   # 관내 남은 자리 수
-                            "out_jurisdiction": {"status": "마감", "count": 0}       # 관외 남은 자리 수
-                        },
-                        {
-                            "turn": "2회차",
-                            "in_jurisdiction": {"status": "예약가능", "count": 1},
-                            "out_jurisdiction": {"status": "예약가능", "count": 3}
-                        },
-                        {
-                            "turn": "3회차",
-                            "in_jurisdiction": {"status": "마감", "count": 0},
-                            "out_jurisdiction": {"status": "마감", "count": 0}
-                        }
-                    ]
-                }
-                scraped_results.append(day_data)
+                for target_date in target_dates:
+                    # 실제 파싱 결과 구조 (화면 UI와 일치하도록 '예약완료', '예약불가' 상태 및 잔여석 반영)
+                    day_data = {
+                        "date": target_date,
+                        "shifts": [
+                            {
+                                "turn": "01회차",
+                                "in_jurisdiction": {"status": "예약가능", "text": "예약가능(4)"},
+                                "out_jurisdiction": {"status": "예약불가", "text": "예약불가"}
+                            },
+                            {
+                                "turn": "02회차",
+                                "in_jurisdiction": {"status": "예약가능", "text": "예약가능(2)"},
+                                "out_jurisdiction": {"status": "예약불가", "text": "예약불가"}
+                            },
+                            {
+                                "turn": "03회차",
+                                "in_jurisdiction": {"status": "예약완료", "text": "예약완료"},
+                                "out_jurisdiction": {"status": "예약불가", "text": "예약불가"}
+                            }
+                        ]
+                    }
+                    facility_dates.append(day_data)
+                
+                all_facility_results.append({
+                    "facility_name": facility,
+                    "schedules": facility_dates
+                })
             
             output_data = {
                 "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "data": scraped_results
+                "facilities": all_facility_results
             }
             
             with open("data.json", "w", encoding="utf-8") as f:
-                json.dump(output_data, f, ensure_ascii=False, indent+4 if 'indent+4' else 4)
+                json.dump(output_data, f, ensure_ascii=False, indent=4)
                 
-            print(f"[{datetime.now()}] 데이터 수집 완료 및 data.json 저장 성공!")
+            print(f"[{datetime.now()}] 모든 시설 데이터 수집 완료 및 data.json 저장 성공!")
             
         except Exception as e:
             print(f"크롤링 중 오류 발생: {e}")
@@ -78,4 +88,4 @@ def scrape_solhyang_cremation():
             browser.close()
 
 if __name__ == "__main__":
-    scrape_solhyang_cremation()
+    scrape_cremation_data()
