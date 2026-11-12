@@ -1,8 +1,9 @@
 {
-    "updated_at": "2026-11-11 23:56:55",
+    "updated_at": "2026-11-12 21:16:54",
     "facilities": [
         {
             "facility_name": "강릉 솔향하늘길",
+            "status": "success",
             "schedules": [
                 {
                     "date": "2026-11-12",
@@ -122,6 +123,7 @@
         },
         {
             "facility_name": "속초시승화원",
+            "status": "success",
             "schedules": [
                 {
                     "date": "2026-11-12",
@@ -241,6 +243,7 @@
         },
         {
             "facility_name": "동해삼척공동화장장",
+            "status": "success",
             "schedules": [
                 {
                     "date": "2026-11-12",
