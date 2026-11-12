@@ -10,21 +10,23 @@
     <div class="max-w-5xl mx-auto">
         <header class="mb-6 text-center">
             <h1 class="text-2xl md:text-3xl font-bold mb-2">🔥 강원권 화장예약 실시간 통합 현황</h1>
-            <p class="text-slate-400 text-sm">솔향하늘길, 속초시승화원, 동해삼척공동화장장 (오늘 제외 향후 3일간 일반시신)</p>
+            <p class="text-slate-400 text-sm">솔향하늘길, 속초시승화원, 동해삼척공동화장장 (향후 3일간 일반시신)</p>
             <div class="mt-4 flex flex-wrap justify-center items-center gap-3">
                 <div id="update-time" class="bg-slate-800 text-cyan-400 px-4 py-1.5 rounded-full text-xs font-mono border border-slate-700">
-                    데이터 동기화 시간 확인 중...
+                    동기화 시간 확인 중...
                 </div>
+                <!-- e하늘 공식 사이트 바로가기 버튼 -->
+                <a href="https://15774129.go.kr/" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow transition flex items-center gap-1.5">
+                    🔗 e하늘 공식 바로가기
+                </a>
                 <button onclick="triggerRefresh()" id="refresh-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow transition flex items-center gap-1.5">
-                    🔄 실시간 즉시 조회
+                    🔄 새로고침
                 </button>
             </div>
         </header>
 
         <!-- 시설별 탭 선택 네비게이션 -->
-        <div id="facility-tabs" class="flex flex-wrap justify-center gap-2 mb-6">
-            <!-- 자바스크립트로 동적 생성 -->
-        </div>
+        <div id="facility-tabs" class="flex flex-wrap justify-center gap-2 mb-6"></div>
 
         <!-- 현황판 컨테이너 -->
         <div id="board-container" class="space-y-6">
@@ -51,7 +53,7 @@
                 console.error(error);
                 document.getElementById('board-container').innerHTML = `
                     <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl text-center text-slate-300">
-                        수집된 데이터가 아직 없습니다. 상단의 <b>[실시간 즉시 조회]</b> 버튼을 눌러주세요.
+                        수집된 데이터가 없습니다. 우측 상단의 <b>[새로고침]</b> 버튼을 눌러주세요.
                     </div>
                 `;
             }
@@ -60,6 +62,8 @@
         function renderTabs() {
             const tabsContainer = document.getElementById('facility-tabs');
             tabsContainer.innerHTML = '';
+
+            if (!globalData || !globalData.facilities) return;
 
             globalData.facilities.forEach((fac, idx) => {
                 const isActive = idx === currentFacilityIdx;
@@ -101,11 +105,10 @@
                     const inData = shift.in_jurisdiction;
                     const outData = shift.out_jurisdiction;
                     
-                    // 상태에 따른 뱃지 디자인 분기 (예약가능 / 예약완료 / 예약불가)
                     const getBadgeStyle = (status) => {
                         if (status === '예약가능') return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
                         if (status === '예약완료') return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-                        return 'bg-rose-500/20 text-rose-400 border-rose-500/30'; // 예약불가 / 마감
+                        return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
                     };
 
                     cardHTML += `
@@ -131,21 +134,11 @@
         }
 
         async function triggerRefresh() {
-            const btn = document.getElementById('refresh-btn');
-            btn.innerText = '조회 요청 중...';
-            btn.disabled = true;
-            
             await fetchReservationData();
-            
-            setTimeout(() => {
-                btn.innerText = '🔄 실시간 즉시 조회';
-                btn.disabled = false;
-                alert('최신 통합 현황 정보를 다시 불러왔습니다!');
-            }, 1000);
+            alert('최신 현황 정보를 다시 불러왔습니다!');
         }
 
         fetchReservationData();
-        setInterval(fetchReservationData, 60000); // 1분마다 웹앱 화면 자동 동기화
     </script>
 </body>
 </html>
