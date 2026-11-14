@@ -1,48 +1,10 @@
 {
-    "updated_at": "2026-11-13 22:45:21",
+    "updated_at": "2026-11-14 02:52:56",
     "facilities": [
         {
             "facility_name": "강릉 솔향하늘길",
             "status": "success",
             "schedules": [
-                {
-                    "date": "2026-11-13",
-                    "shifts": [
-                        {
-                            "turn": "01회차",
-                            "in_jurisdiction": {
-                                "status": "예약가능",
-                                "text": "예약가능(4)"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        },
-                        {
-                            "turn": "02회차",
-                            "in_jurisdiction": {
-                                "status": "예약가능",
-                                "text": "예약가능(2)"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        },
-                        {
-                            "turn": "03회차",
-                            "in_jurisdiction": {
-                                "status": "예약완료",
-                                "text": "예약완료"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        }
-                    ]
-                },
                 {
                     "date": "2026-11-14",
                     "shifts": [
@@ -83,6 +45,44 @@
                 },
                 {
                     "date": "2026-11-15",
+                    "shifts": [
+                        {
+                            "turn": "01회차",
+                            "in_jurisdiction": {
+                                "status": "예약가능",
+                                "text": "예약가능(4)"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        },
+                        {
+                            "turn": "02회차",
+                            "in_jurisdiction": {
+                                "status": "예약가능",
+                                "text": "예약가능(2)"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        },
+                        {
+                            "turn": "03회차",
+                            "in_jurisdiction": {
+                                "status": "예약완료",
+                                "text": "예약완료"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "date": "2026-11-16",
                     "shifts": [
                         {
                             "turn": "01회차",
@@ -126,44 +126,6 @@
             "status": "success",
             "schedules": [
                 {
-                    "date": "2026-11-13",
-                    "shifts": [
-                        {
-                            "turn": "01회차",
-                            "in_jurisdiction": {
-                                "status": "예약가능",
-                                "text": "예약가능(4)"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        },
-                        {
-                            "turn": "02회차",
-                            "in_jurisdiction": {
-                                "status": "예약가능",
-                                "text": "예약가능(2)"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        },
-                        {
-                            "turn": "03회차",
-                            "in_jurisdiction": {
-                                "status": "예약완료",
-                                "text": "예약완료"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        }
-                    ]
-                },
-                {
                     "date": "2026-11-14",
                     "shifts": [
                         {
@@ -203,6 +165,44 @@
                 },
                 {
                     "date": "2026-11-15",
+                    "shifts": [
+                        {
+                            "turn": "01회차",
+                            "in_jurisdiction": {
+                                "status": "예약가능",
+                                "text": "예약가능(4)"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        },
+                        {
+                            "turn": "02회차",
+                            "in_jurisdiction": {
+                                "status": "예약가능",
+                                "text": "예약가능(2)"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        },
+                        {
+                            "turn": "03회차",
+                            "in_jurisdiction": {
+                                "status": "예약완료",
+                                "text": "예약완료"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "date": "2026-11-16",
                     "shifts": [
                         {
                             "turn": "01회차",
@@ -246,44 +246,6 @@
             "status": "success",
             "schedules": [
                 {
-                    "date": "2026-11-13",
-                    "shifts": [
-                        {
-                            "turn": "01회차",
-                            "in_jurisdiction": {
-                                "status": "예약가능",
-                                "text": "예약가능(4)"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        },
-                        {
-                            "turn": "02회차",
-                            "in_jurisdiction": {
-                                "status": "예약가능",
-                                "text": "예약가능(2)"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        },
-                        {
-                            "turn": "03회차",
-                            "in_jurisdiction": {
-                                "status": "예약완료",
-                                "text": "예약완료"
-                            },
-                            "out_jurisdiction": {
-                                "status": "예약불가",
-                                "text": "예약불가"
-                            }
-                        }
-                    ]
-                },
-                {
                     "date": "2026-11-14",
                     "shifts": [
                         {
@@ -323,6 +285,44 @@
                 },
                 {
                     "date": "2026-11-15",
+                    "shifts": [
+                        {
+                            "turn": "01회차",
+                            "in_jurisdiction": {
+                                "status": "예약가능",
+                                "text": "예약가능(4)"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        },
+                        {
+                            "turn": "02회차",
+                            "in_jurisdiction": {
+                                "status": "예약가능",
+                                "text": "예약가능(2)"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        },
+                        {
+                            "turn": "03회차",
+                            "in_jurisdiction": {
+                                "status": "예약완료",
+                                "text": "예약완료"
+                            },
+                            "out_jurisdiction": {
+                                "status": "예약불가",
+                                "text": "예약불가"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "date": "2026-11-16",
                     "shifts": [
                         {
                             "turn": "01회차",
